@@ -5,6 +5,7 @@ from liquid_audio import LFM2AudioModel, LFM2AudioProcessor, ChatState, LFMModal
 from typing import Optional
 import tempfile
 import os
+import numpy as np
 
 # Global model and processor
 model = None
@@ -75,9 +76,23 @@ def speech_to_speech_chat(audio_input, text_input, chat_history, system_prompt):
             audio_codes = torch.stack(audio_out[:-1], 1).unsqueeze(0)
             waveform = processor.decode(audio_codes)
             
+            # Ensure waveform is in correct format for saving
+            waveform_cpu = waveform.cpu()
+            
+            # Ensure 2D tensor (channels, samples)
+            if waveform_cpu.dim() == 1:
+                waveform_cpu = waveform_cpu.unsqueeze(0)
+            elif waveform_cpu.dim() > 2:
+                waveform_cpu = waveform_cpu.squeeze()
+                if waveform_cpu.dim() == 1:
+                    waveform_cpu = waveform_cpu.unsqueeze(0)
+            
+            # Clip to valid range
+            waveform_cpu = torch.clamp(waveform_cpu, -1.0, 1.0)
+            
             # Save to temporary file
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-                torchaudio.save(tmp.name, waveform.cpu(), 24_000)
+                torchaudio.save(tmp.name, waveform_cpu, 24_000, encoding="PCM_S", bits_per_sample=16)
                 audio_file = tmp.name
         
         # Update chat history
@@ -152,9 +167,21 @@ def tts_synthesis(text_input, voice_selection):
             audio_codes = torch.stack(audio_out[:-1], 1).unsqueeze(0)
             waveform = processor.decode(audio_codes)
             
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-                torchaudio.save(tmp.name, waveform.cpu(), 24_000)
-                yield (24_000, waveform.cpu().numpy())
+            # Ensure waveform is in the correct shape and format
+            waveform_np = waveform.cpu().squeeze().numpy()
+            
+            # Handle multi-channel audio - take first channel if stereo
+            if waveform_np.ndim > 1:
+                waveform_np = waveform_np[0]
+            
+            # Ensure the audio is in float32 format normalized between -1 and 1
+            waveform_np = waveform_np.astype(np.float32)
+            
+            # Clip values to valid range
+            waveform_np = np.clip(waveform_np, -1.0, 1.0)
+            
+            # Return as (sample_rate, numpy_array) tuple
+            yield (24_000, waveform_np)
         
     except Exception as e:
         yield f"Error: {str(e)}"
