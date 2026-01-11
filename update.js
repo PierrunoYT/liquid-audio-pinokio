@@ -7,9 +7,18 @@ module.exports = {
       }
     },
     {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "uv pip install --upgrade -r requirements.txt"
+        ]
+      }
+    },
+    {
       method: "notify",
       params: {
-        html: "Update complete! The repository has been updated to the latest version."
+        html: "Update complete! The launcher and dependencies have been updated to the latest versions."
       }
     }
   ]

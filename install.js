@@ -1,6 +1,16 @@
 module.exports = {
   run: [
-    // Install PyTorch with CUDA support first
+    // Install Liquid Audio dependencies from requirements.txt first
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "uv pip install --no-deps -r requirements.txt"
+        ],
+      }
+    },
+    // Install PyTorch with CUDA support after (to ensure CUDA versions are used)
     {
       method: "script.start",
       params: {
@@ -11,16 +21,6 @@ module.exports = {
           xformers: true,
           flashattn: true
         }
-      }
-    },
-    // Install Liquid Audio dependencies from requirements.txt
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        message: [
-          "uv pip install -r requirements.txt"
-        ],
       }
     },
     {
