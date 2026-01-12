@@ -20,7 +20,7 @@ module.exports = {
         venv: "env",
         message: [
           "uv pip install -r requirements.txt --no-deps",
-          "uv pip install gradio transformers accelerate librosa sentencepiece"
+          "uv pip install gradio>=5.50.0 transformers>=4.30.0 accelerate>=0.20.0 librosa>=0.10.0 sentencepiece"
         ],
       }
     },
