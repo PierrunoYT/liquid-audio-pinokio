@@ -1,16 +1,6 @@
 module.exports = {
   run: [
-    // Install Liquid Audio dependencies from requirements.txt first
-    {
-      method: "shell.run",
-      params: {
-        venv: "env",
-        message: [
-          "uv pip install -r requirements.txt"
-        ],
-      }
-    },
-    // Install PyTorch with CUDA support after (to ensure CUDA versions are used)
+    // Install PyTorch with CUDA support first
     {
       method: "script.start",
       params: {
@@ -21,6 +11,17 @@ module.exports = {
           xformers: true,
           flashattn: true
         }
+      }
+    },
+    // Install Liquid Audio dependencies from requirements.txt (will use existing PyTorch)
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        message: [
+          "uv pip install -r requirements.txt --no-deps",
+          "uv pip install gradio transformers accelerate librosa"
+        ],
       }
     },
     {
