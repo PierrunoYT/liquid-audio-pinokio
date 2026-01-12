@@ -13,12 +13,12 @@ module.exports = {
         }
       }
     },
-    // Install Liquid Audio dependencies from requirements.txt (PyTorch already installed from torch.js)
+    // Install Liquid Audio dependencies from requirements.txt (skip torch packages to preserve CUDA versions)
     {
       method: "shell.run",
       params: {
         venv: "env",
-        message: "uv pip install -r requirements.txt"
+        message: "uv pip install gradio>=5.50.0 liquid-audio transformers>=4.30.0 accelerate>=0.20.0 librosa>=0.10.0 numba>=0.59.0 llvmlite>=0.44.0 sentencepiece"
       }
     },
     {
