@@ -19,8 +19,8 @@ module.exports = {
       params: {
         venv: "env",
         message: [
-          "uv pip install -r requirements.txt --no-deps",
-          "uv pip install gradio transformers accelerate librosa"
+          "uv pip install gradio transformers accelerate librosa numba llvmlite",
+          "uv pip install liquid-audio"
         ],
       }
     },
