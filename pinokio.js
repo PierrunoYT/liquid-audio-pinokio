@@ -3,7 +3,7 @@ module.exports = {
   version: "5.0",
   title: "Liquid Audio",
   description: "🎙️ Liquid Audio - LFM2.5-Audio-1.5B Model - Speech-to-Speech Chat, Automatic Speech Recognition (ASR), and Text-to-Speech (TTS) synthesis powered by Liquid AI. All-in-one audio processing with interleaved text and audio responses.",
-  icon: "icon.png",
+  icon: "icon.jpg",
   menu: async (kernel, info) => {
     let installed = info.exists("env")
     let running = {
