@@ -34,8 +34,9 @@ The LFM2.5-Audio-1.5B model supports interleaved text and audio generation, enab
 
 1. **Clone or download this repository**
 
-2. **Install dependencies**:
+2. **Install dependencies** (from the `app` folder):
 ```bash
+cd app
 pip install -r requirements.txt
 ```
 
@@ -43,6 +44,7 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+(Still inside the `app` directory.)
 
 4. **Access the interface**:
 Open your browser and navigate to `http://localhost:7860`
