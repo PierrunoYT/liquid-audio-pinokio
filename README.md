@@ -117,6 +117,75 @@ The interface uses Gradio with PyTorch and torchaudio to load and run the LFM2.5
 - **Reset**: Removes the virtual environment
 - **Save Disk Space**: Deduplicates redundant library files
 
+## Programmatic Access (API)
+
+The Gradio interface exposes the core functions via its built-in API. You can call them programmatically from Python, JavaScript, or curl.
+
+### 1. Python (using `gradio_client`)
+
+```bash
+pip install gradio_client
+```
+
+```python
+from gradio_client import Client, handle_file
+
+client = Client("http://127.0.0.1:7860/")
+
+# Speech-to-Speech Chat
+result = client.predict(
+    audio_input=handle_file("input.wav"),   # or None
+    text_input="Hello, how are you?",
+    chat_history=[],
+    system_prompt="Respond with interleaved text and audio.",
+    api_name="/speech_to_speech_chat"       # or check the API tab in the UI
+)
+print(result)
+
+# Automatic Speech Recognition (ASR)
+transcription = client.predict(
+    audio_input=handle_file("speech.wav"),
+    api_name="/asr_transcription"
+)
+print(transcription)
+
+# Text-to-Speech (TTS)
+audio = client.predict(
+    text_input="Hello world",
+    voice_selection="US Female",
+    api_name="/tts_synthesis"
+)
+print(audio)
+```
+
+### 2. JavaScript (fetch)
+
+```js
+const response = await fetch("http://127.0.0.1:7860/api/predict", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    fn_index: 0,           // Check the API docs in the running UI for correct indices
+    data: [null, "Hello", [], "Respond with interleaved text and audio."]
+  })
+});
+const result = await response.json();
+console.log(result);
+```
+
+### 3. Curl
+
+```bash
+curl -X POST "http://127.0.0.1:7860/api/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fn_index": 0,
+    "data": [null, "Hello there", [], "Respond with interleaved text and audio."]
+  }'
+```
+
+**Tip:** When the app is running, click the **"Use via API"** button in the bottom of the Gradio interface for the exact current `fn_index` values and full OpenAPI-style documentation.
+
 ## Notes
 
 - First model load may take longer as the weights are downloaded from Hugging Face

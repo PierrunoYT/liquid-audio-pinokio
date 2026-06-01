@@ -1,4 +1,7 @@
 module.exports = {
+  requires: {
+    bundle: "ai"
+  },
   run: [
     // Install Liquid Audio dependencies first (before torch to prevent torchvision mismatch)
     {
