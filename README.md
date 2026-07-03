@@ -102,11 +102,11 @@ The interface uses Gradio with PyTorch and torchaudio to load and run the LFM2.5
 
 ## Requirements
 
-- Python 3.8+
-- PyTorch 2.0+
+- Python 3.12
+- PyTorch 2.7+ (installed automatically by Pinokio based on your GPU)
 - CUDA-capable GPU (recommended for faster inference)
 - torchaudio
-- Gradio 4.0+
+- Gradio 5.50+
 - liquid-audio library
 
 ## Pinokio Commands
