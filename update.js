@@ -12,7 +12,8 @@ module.exports = {
         venv: "env",
         path: "app",
         message: [
-          "uv pip install --upgrade -r requirements.txt"
+          "uv pip install --upgrade gradio>=5.50.0 transformers>=4.30.0 accelerate>=0.20.0 librosa>=0.10.0 numba>=0.59.0 llvmlite>=0.44.0 sentencepiece",
+          "uv pip install --upgrade liquid-audio --no-deps"
         ]
       }
     },
