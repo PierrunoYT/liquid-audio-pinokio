@@ -3,6 +3,7 @@
 import unittest
 from unittest.mock import patch
 
+import httpx
 import torch
 from gradio_client import Client
 from test_app import app, fake_pair
@@ -31,6 +32,18 @@ class ApiTests(unittest.TestCase):
                 client.predict(None, "Fresh", "", api_name="/speech_to_speech_chat")
                 inputs = pair[0].generate_interleaved.call_args.kwargs
                 self.assertEqual(inputs["audio_out"].shape[-1], 0)
+                response = httpx.post(
+                    f"{url}gradio_api/call/tts_synthesis",
+                    json={"data": ["Hello world", "US Female"]},
+                )
+                response.raise_for_status()
+                event_id = response.json()["event_id"]
+                events = httpx.get(
+                    f"{url}gradio_api/call/tts_synthesis/{event_id}", timeout=30
+                )
+                events.raise_for_status()
+                self.assertIn("event: complete", events.text)
+                self.assertNotIn("event: error", events.text)
                 client.close()
             finally:
                 demo.close()
