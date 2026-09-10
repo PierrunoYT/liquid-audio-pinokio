@@ -3,18 +3,13 @@ module.exports = {
     {
       method: "shell.run",
       params: {
-        message: "git pull"
+        message: "git pull --ff-only"
       }
     },
     {
-      method: "shell.run",
+      method: "script.start",
       params: {
-        venv: "env",
-        path: "app",
-        message: [
-          "uv pip install --upgrade gradio>=5.50.0 transformers>=4.30.0 accelerate>=0.20.0 librosa>=0.10.0 numba>=0.59.0 llvmlite>=0.44.0 sentencepiece",
-          "uv pip install --upgrade liquid-audio --no-deps"
-        ]
+        uri: "install.js"
       }
     },
     {
