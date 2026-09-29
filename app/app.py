@@ -37,7 +37,12 @@ def load_models():
 
 def read_audio(filename):
     """Read uploads as mono float32; ChatState rejects stereo inputs."""
-    samples, sample_rate = sf.read(filename, dtype="float32", always_2d=True)
+    try:
+        samples, sample_rate = sf.read(filename, dtype="float32", always_2d=True)
+    except sf.LibsndfileError as error:
+        raise gr.Error(
+            "Unsupported or unreadable audio file. Upload WAV, FLAC, OGG, or MP3."
+        ) from error
     if not samples.size:
         raise gr.Error("The audio file is empty.")
     return torch.from_numpy(samples.mean(axis=1)).unsqueeze(0), sample_rate

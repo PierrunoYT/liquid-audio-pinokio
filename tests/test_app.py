@@ -100,6 +100,13 @@ class AudioTests(unittest.TestCase):
             self.assertEqual(tuple(waveform.shape), (1, 2))
             torch.testing.assert_close(waveform, torch.tensor([[0.0, 0.5]]))
 
+    def test_unreadable_upload_is_reported(self):
+        with tempfile.TemporaryDirectory() as directory:
+            filename = Path(directory) / "speech.m4a"
+            filename.write_bytes(b"not audio data")
+            with self.assertRaises(gr.Error):
+                app.read_audio(str(filename))
+
     def test_end_marker_and_token_limit(self):
         _, processor = fake_pair([])
         frame = torch.zeros(8, dtype=torch.long)
