@@ -343,4 +343,5 @@ def create_ui():
 
 if __name__ == "__main__":
     demo = create_ui()
-    demo.launch(server_name="127.0.0.1")
+    # Loopback-only, so surface model download and CUDA failures in the UI.
+    demo.launch(server_name="127.0.0.1", show_error=True)

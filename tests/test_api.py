@@ -16,7 +16,10 @@ class ApiTests(unittest.TestCase):
             demo = app.create_ui()
             try:
                 _, url, _ = demo.launch(
-                    server_name="127.0.0.1", prevent_thread_lock=True, quiet=True
+                    server_name="127.0.0.1",
+                    show_error=True,
+                    prevent_thread_lock=True,
+                    quiet=True,
                 )
                 client = Client(url, verbose=False)
                 audio = client.predict("Hello", "US Male", api_name="/tts_synthesis")
@@ -44,6 +47,11 @@ class ApiTests(unittest.TestCase):
                 events.raise_for_status()
                 self.assertIn("event: complete", events.text)
                 self.assertNotIn("event: error", events.text)
+                with patch.object(
+                    app, "load_models", side_effect=RuntimeError("download failed")
+                ):
+                    with self.assertRaisesRegex(Exception, "download failed"):
+                        client.predict("Hello", "US Male", api_name="/tts_synthesis")
                 client.close()
             finally:
                 demo.close()
