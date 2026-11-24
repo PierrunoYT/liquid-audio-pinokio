@@ -47,11 +47,13 @@ class ApiTests(unittest.TestCase):
                 events.raise_for_status()
                 self.assertIn("event: complete", events.text)
                 self.assertNotIn("event: error", events.text)
-                with patch.object(
-                    app, "load_models", side_effect=RuntimeError("download failed")
+                with (
+                    patch.object(
+                        app, "load_models", side_effect=RuntimeError("download failed")
+                    ),
+                    self.assertRaisesRegex(Exception, "download failed"),
                 ):
-                    with self.assertRaisesRegex(Exception, "download failed"):
-                        client.predict("Hello", "US Male", api_name="/tts_synthesis")
+                    client.predict("Hello", "US Male", api_name="/tts_synthesis")
                 client.close()
             finally:
                 demo.close()

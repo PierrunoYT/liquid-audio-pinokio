@@ -56,7 +56,8 @@ def decode_audio(processor, tokens):
     with torch.inference_mode():
         waveform = processor.decode(torch.stack(frames, 1).unsqueeze(0))
     samples = waveform.detach().float().cpu().numpy().reshape(-1)
-    return SAMPLE_RATE, np.clip(samples, -1.0, 1.0)
+    # Gradio expects int16 PCM; passing float32 triggers a conversion warning per call.
+    return SAMPLE_RATE, (np.clip(samples, -1.0, 1.0) * 32767).astype(np.int16)
 
 
 def new_chat(model, processor, system_prompt):
